@@ -1,17 +1,23 @@
 import mongoose from "mongoose";
 import 'dotenv/config'
 
-let dbURl = process.env.DBURL;
-dbURl = dbURl.replace("<password>" ,process.env.PASSWORD);
 
+// Retrieve the database URL from environment variables
+let dbURl = process.env.DBURL;
+// Replace placeholder with the actual password from environment variables
+dbURl = dbURl.replace("<password>", process.env.PASSWORD);
+
+// Function to connect to MongoDB
 export default function connectMongoDB() {
     mongoose.connect(dbURl)
-    .then(
-        () => {
+        .then(() => {
+            // Log success message if connection is successful
             console.log("MongoDB Connection Succeeded🔥");
-        }
-    ).catch(err => {
-        console.error("Connection error 😥", err);
-        process.exit();
-    });
+        })
+        .catch(err => {
+            // Log error message if connection fails
+            console.error("Connection error 😥", err);
+            // Exit the process with failure code
+            process.exit();
+        });
 }

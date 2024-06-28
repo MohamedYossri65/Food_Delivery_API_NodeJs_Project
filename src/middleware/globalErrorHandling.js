@@ -1,3 +1,4 @@
+import AppError from "../utils/AppError.js";
 
 //send value that not id in params
 const handelCastError =(err)=>{
@@ -15,6 +16,12 @@ const handelValidationError =(err)=>{
     const errors = Object.values(err.errors).map(el => el.message);
     const message = `Invalid input data. ${errors.join('. ')}`;
     return new AppError(message, 400);
+}
+
+//
+const handelJsonWebTokenError=(err)=>{
+    let message = `Invalid token. ${err.message}`;
+    return new AppError(message, 401);
 }
 
 // Function to handle errors in production environment
@@ -59,17 +66,20 @@ const sendErrDeveolpment =(err, res)=> {
 // Global error handling middleware
 const globalErrorHandling = (err, req, res, next) => {
     // Check the environment and call the appropriate error handling function
-    if (process.env.NODE_ENV == 'production') {
-        sendErrProduction(err, res);
-    } else if (process.env.NODE_ENV == 'development') {
-        const error ={...err};
+    if (process.env.NODE_ENV == 'development') {
+        sendErrDeveolpment(err, res);
+    } else if (process.env.NODE_ENV == 'production') {
+        let error ={...err};
         //send value that not id in params
         if(error.name == 'castError') error = handelCastError(error);
         //duPlicate key error
         if(error.code == 11000) error = handelDuPlicateError(error);
         //error in validation like max value or number of characters
         if(error.name == 'validationError') error = handelValidationError(error);
-        sendErrDeveolpment(error, res);
+
+        if(error.name == 'JsonWebTokenError' ||error.name == 'TokenExpiredError') error = handelJsonWebTokenError(error);
+        
+        sendErrProduction(error, res);
     }
 };
 

@@ -1,7 +1,7 @@
 // Event listener for uncaught exceptions
-process.on('uncaughtException',(err)=>{
+process.on('uncaughtException', (err) => {
     console.log('closing the server due to uncaughtException💥!!');
-    console.log('uncaughtException',err.name ,err.message);
+    console.log('uncaughtException', err.name, err.message);
     process.exit(1);
 });
 
@@ -14,43 +14,49 @@ import morgan from 'morgan';
 import foodRouter from './src/food/food.router.js';
 import globalErrorHandling from './src/middleware/globalErrorHandling.js';
 import AppError from './src/utils/AppError.js';
+import categoryRouter from './src/category/category.route.js';
+import resturantRouter from './src/Restaurant/resturant.route.js';
+import authRouter from './src/auth/auth.router.js';
+
 
 
 const app = express();
 /* middelWares */
 app.use(express.json());
 
-if(process.env.NODE_ENV == 'development'){
+if (process.env.NODE_ENV == 'development') {
     app.use(morgan('dev'));
 }
 
-
+app.set('trust proxy', true);
 /*connect to dataBase */
 connectMongoDB();
 
 /*routs*/
-app.use('/api/v1/food',foodRouter);
+app.use('/api/v1/food', foodRouter);
+app.use('/api/v1/category', categoryRouter);
+app.use('/api/v1/restaurant', resturantRouter);
+app.use('/api/v1/auth', authRouter);
 
 /*handel unknon routs */
-app.all('*',(req,res,next) => {
-    next(new AppError(`this route ${req.originalUrl} is not found `,404));
+app.all('/*', (req, res, next) => {
+    next(new AppError(`this route ${req.originalUrl} is not found `, 404));
 })
 
 /*globel error handel */
 app.use(globalErrorHandling);
 
-
 /*listen to req and res */
-const port = process.env.PORT||3000;
-const server = app.listen(port ,()=>{
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
     console.log(`server is running on port ${port}...💯`);
 });
 
 // Event listener for unhandled promise rejections like error in database connection
-process.on('unhandledRejection',(err)=>{
+process.on('unhandledRejection', (err) => {
     console.log('closing the server due to unhandledRejection💥!!');
-    console.log('unhandledRejection',err.name ,err.message);
-    server.close(()=>{
+    console.log('unhandledRejection', err.name, err.message);
+    server.close(() => {
         process.exit(1);
     })
 });

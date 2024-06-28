@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
+import slugify from "slugify";
 
 const categorySchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true ,"the name of the category is required"],
         trim: true
+    },
+    slugName:{
+        type: String,
     },
     description: {
         type: String,
@@ -17,6 +21,11 @@ const categorySchema = new mongoose.Schema({
         trim: true
     }
 },{timestamps: true})
+
+categorySchema.pre('save', function(){
+    this.slugName = slugify(this.name);
+})
+
 
 const categoryModel =mongoose.model("CATEGORY",categorySchema);
 
