@@ -4,29 +4,50 @@ import slugify from "slugify";
 const categorySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true ,"the name of the category is required"],
+        required: [true, "the name of the category is required"],
         trim: true
     },
-    slugName:{
+    slugName: {
         type: String,
-    },
-    description: {
-        type: String,
-        required: [true, "the description of the category is required"],
-        trim: true
     },
     image: {
         type: String,
         required: [true, "the image of the category is required"],
         trim: true
-    }
-},{timestamps: true})
+    },
+    resturant: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user'
+        }
+    ]
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+})
 
-categorySchema.pre('save', function(){
+// Create a compound index on name and description to ensure uniqueness
+categorySchema.index({ name: 1, resturants: 1 }, { unique: true });
+
+
+categorySchema.pre('save', function () {
     this.slugName = slugify(this.name);
 })
 
+categorySchema.pre(/^find/, function () {
+    this.populate({
+        path: 'foods',
+        select: '-_id -__v -createdAt -updatedAt'
+    })
+})
 
-const categoryModel =mongoose.model("CATEGORY",categorySchema);
+categorySchema.virtual('foods', {
+    ref: 'food',
+    foreignField: 'category',
+    localField: '_id'
+})
+
+const categoryModel = mongoose.model("category", categorySchema);
 
 export default categoryModel;

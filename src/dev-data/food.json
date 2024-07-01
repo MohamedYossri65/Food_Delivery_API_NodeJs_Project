@@ -1,0 +1,72 @@
+[
+    {
+      "name": "Apple Pie",
+      "slugName": "apple-pie",
+      "price": 12.99,
+      "description": "A delicious homemade apple pie with a flaky crust and a sweet, spiced filling.",
+      "category": "66819e2ccbc3cf15dbdbb5be",  
+      "resturantName": "60d5ecf4f5f5e62348eb9d90",  
+      "soldOut": false,
+      "soldedQuantity": 50,
+      "discount": 10,
+      "rate": 4,
+      "rateSum": 200,
+      "rateAvg": 4
+    },
+    {
+      "name": "Grilled Chicken Sandwich",
+      "slugName": "grilled-chicken-sandwich",
+      "price": 8.99,
+      "description": "A tasty grilled chicken sandwich with fresh lettuce, tomato, and a special sauce.",
+      "category": "66819e2ccbc3cf15dbdbb5b9",  
+      "resturantName": "60d5ecf4f5f5e62348eb9d91",  
+      "soldOut": false,
+      "soldedQuantity": 150,
+      "discount": 5,
+      "rate": 5,
+      "rateSum": 500,
+      "rateAvg": 5
+    },
+    {
+      "name": "Vegan Salad",
+      "slugName": "vegan-salad",
+      "price": 6.99,
+      "description": "A healthy and fresh vegan salad with mixed greens, vegetables, and a light vinaigrette.",
+      "category": "66819e2ccbc3cf15dbdbb5bb",  
+      "resturantName": "60d5ecf4f5f5e62348eb9d92",  
+      "soldOut": false,
+      "soldedQuantity": 30,
+      "discount": 0,
+      "rate": 4.5,
+      "rateSum": 135,
+      "rateAvg": 4.5
+    },
+    {
+      "name": "Cheese Pizza",
+      "slugName": "cheese-pizza",
+      "price": 10.99,
+      "description": "A classic cheese pizza with a crispy crust and melted mozzarella cheese.",
+      "category": "66819e2ccbc3cf15dbdbb5bb",  
+      "resturantName": "60d5ecf4f5f5e62348eb9d93",  
+      "soldOut": false,
+      "soldedQuantity": 100,
+      "discount": 15,
+      "rate": 4,
+      "rateSum": 400,
+      "rateAvg": 4
+    },
+    {
+      "name": "Spaghetti Carbonara",
+      "slugName": "spaghetti-carbonara",
+      "price": 14.99,
+      "description": "A rich and creamy spaghetti carbonara with pancetta and parmesan cheese.",
+      "category": "66819e2ccbc3cf15dbdbb5bb",  
+      "resturantName": "60d5ecf4f5f5e62348eb9d94",  
+      "soldOut": false,
+      "soldedQuantity": 70,
+      "discount": 20,
+      "rate": 5,
+      "rateSum": 350,
+      "rateAvg": 5
+    }
+  ]

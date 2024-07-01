@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
+import cryptography from "cryptography";
 
 
 const userSchema = new mongoose.Schema({
@@ -17,12 +19,11 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "the password is required"],
-        minLength: [8, "the password must be at least 8 characters"],
-        maxLength: [15, "the password must be at most 15 characters"],
-        trim: true
+        trim: true,
+        select: false
     },
     phone: {
-        type: Number,
+        type: String,
         required: [true, "the phone number is required"],
         minLength: [11, "the phone must be at least 11 characters"],
         maxLength: [15, "the phone must be at most 15 characters"],
@@ -34,23 +35,44 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ["user", "admin"],
+        enum: ["user", "admin" ,"resturant"],
         default: "user"
     },
-    passwordUpdatedAt: Date
+    passwordUpdatedAt: Date,
+    passwordResetToken: String,
+    passwordResetTokenExpiersAt: Date,
+    isActive: {
+        type: Boolean,
+        default: true,
+        select: false
+    }
 }, { timestamps: true })
 
 // Middleware to hash password before saving a user document
-userSchema.pre('save', async function () {
+userSchema.pre('save', async function (next) {
+    // If the password is not modified, skip hashing
+    if (!this.isModified('password')) return;
     // Hash the user's password with a cost of 12
     this.password = await bcrypt.hash(this.password, 12);
+    next();
+});
+
+userSchema.pre('save', function(next) {
+    if (this.role !== 'restaurant') {
+        this.openNow = undefined;
+    }
+    next();
+});
+
+userSchema.pre(/^find/, async function () {
+    this.find({ isActive: { $ne: false } });
 });
 
 // Method to compare a candidate password with the user's stored password
 userSchema.methods.correctPassword = function (candidatePassword, userPassword) {
     // Compare the candidate password with the stored password
     return bcrypt.compareSync(candidatePassword, userPassword);
-};
+}
 
 // Method to check if the password was changed after the JWT token was issued
 userSchema.methods.changePasswordAfter = function (tokenStartAt) {
@@ -62,8 +84,15 @@ userSchema.methods.changePasswordAfter = function (tokenStartAt) {
     }
     // If passwordUpdatedAt does not exist, return false
     return false;
-};
+}
 
-const userModel = mongoose.model("USER", userSchema);
+userSchema.methods.createResetPasswordToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    this.passwordResetToken = cryptography.encryptSync(resetToken);
+    this.passwordResetTokenExpiersAt = Date.now() + 10 * 60 * 1000;
+    return resetToken;
+}
+
+const userModel = mongoose.model("user", userSchema);
 
 export default userModel;

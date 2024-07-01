@@ -5,7 +5,7 @@ import * as factorHandler from '../Handler/factorHandler.js'
 
 const addFood = factorHandler.addOne(foodModel, 'food');
 
-const getAllFoods = factorHandler.getAllDocuments(foodModel, 'foods');
+const getAllFoods = factorHandler.getAllDocuments(foodModel, 'foods' ,'params');
 
 const getOneFood = factorHandler.getOne(foodModel, 'food');
 

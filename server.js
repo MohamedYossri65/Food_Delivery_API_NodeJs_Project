@@ -15,28 +15,51 @@ import foodRouter from './src/food/food.router.js';
 import globalErrorHandling from './src/middleware/globalErrorHandling.js';
 import AppError from './src/utils/AppError.js';
 import categoryRouter from './src/category/category.route.js';
-import resturantRouter from './src/Restaurant/resturant.route.js';
 import authRouter from './src/auth/auth.router.js';
+import userRouter from './src/User/user.route.js';
 
-
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import ExpressMongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
+import reviewRouter from './src/review/review.route.js';
 
 const app = express();
-/* middelWares */
-app.use(express.json());
+// 1) GLOBAL MIDDLEWARES
+// Set security HTTP headers
+app.use(helmet());
+
+const limiter = rateLimit({
+    max: 100,
+    windowMs: 60 * 60 * 1000, // 1 hour
+    message: 'Too many requests from this IP, please try again in an hour.'
+})
+app.use('/api', limiter);
+
+
+// Body parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' }));
+
+// Data sanitization against NoSQL query injection
+app.use(ExpressMongoSanitize());
+
+// Data sanitization against XSS
+app.use(xss());
 
 if (process.env.NODE_ENV == 'development') {
     app.use(morgan('dev'));
 }
 
-app.set('trust proxy', true);
+// app.set('trust proxy', true);
 /*connect to dataBase */
 connectMongoDB();
 
 /*routs*/
 app.use('/api/v1/food', foodRouter);
 app.use('/api/v1/category', categoryRouter);
-app.use('/api/v1/restaurant', resturantRouter);
+app.use('/api/v1/user', userRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/review', reviewRouter);
 
 /*handel unknon routs */
 app.all('/*', (req, res, next) => {

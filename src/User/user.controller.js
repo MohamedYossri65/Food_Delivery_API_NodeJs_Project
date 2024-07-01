@@ -2,7 +2,7 @@
 import catchAsyncError from '../utils/catchAsyncError.js';
 import userModel from '../../database/models/userModel.js';
 import AppError from '../utils/AppError.js';
-
+import * as factorHandler from '../Handler/factorHandler.js';
 
 
 const addUser = catchAsyncError(async (req, res, next) => {

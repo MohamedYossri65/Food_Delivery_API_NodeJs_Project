@@ -1,13 +1,12 @@
 import express from 'express';
 import * as foodcontroller from './food.controller.js';
-import { protectedRouts } from '../auth/auth.controller.js';
 
-const foodRouter = express.Router();
+const foodRouter = express.Router({mergeParams : true});
 
 
 foodRouter.route('/')
     .post(foodcontroller.addFood)
-    .get(protectedRouts ,foodcontroller.getAllFoods);   
+    .get(foodcontroller.getAllFoods);   
 
 
 foodRouter.route('/:id')

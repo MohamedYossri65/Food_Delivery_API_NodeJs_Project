@@ -1,17 +1,17 @@
 import express from 'express';
-import * as resturantcontroller from './user.controller.js';
+import * as usercontroller from './user.controller.js';
 
-const resturantRouter = express.Router();
-
-
-resturantRouter.route('/')
-    .post(resturantcontroller.addResturant)
-    .get(resturantcontroller.getAllResturants);   
+const userRouter = express.Router();
 
 
-resturantRouter.route('/:id')
-    .get(resturantcontroller.getOneResturant)
-    .delete(resturantcontroller.deleteOneResturant)
-    .patch(resturantcontroller.updateOneResturant);
+userRouter.route('/')
+    .post(usercontroller.addUser)
+    .get(usercontroller.getAllUsers);   
 
-export default resturantRouter;
+
+userRouter.route('/:id')
+    .get(usercontroller.getOneUser)
+    .delete(usercontroller.deleteOneUser)
+    .patch(usercontroller.updateOneUser);
+
+export default userRouter;

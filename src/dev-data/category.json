@@ -1,0 +1,52 @@
+
+ [ {
+    "name": "Fruits",
+    "slugName": "fruits",
+    "image": "https://example.com/images/fruits.jpg"
+  },
+  {
+    "name": "Vegetables",
+    "slugName": "vegetables",
+    "image": "https://example.com/images/vegetables.jpg"
+  },
+  {
+    "name": "Dairy Products",
+    "slugName": "dairy-products",
+    "image": "https://example.com/images/dairy.jpg"
+  },
+  {
+    "name": "Meat",
+    "slugName": "meat",
+    "image": "https://example.com/images/meat.jpg"
+  },
+  {
+    "name": "Seafood",
+    "slugName": "seafood",
+    "image": "https://example.com/images/seafood.jpg"
+  },
+  {
+    "name": "Beverages",
+    "slugName": "beverages",
+    "image": "https://example.com/images/beverages.jpg"
+  },
+  {
+    "name": "Snacks",
+    "slugName": "snacks",
+    "image": "https://example.com/images/snacks.jpg"
+  },
+  {
+    "name": "Bakery",
+    "slugName": "bakery",
+    "image": "https://example.com/images/bakery.jpg"
+  },
+  {
+    "name": "Frozen Foods",
+    "slugName": "frozen-foods",
+    "image": "https://example.com/images/frozen.jpg"
+  },
+  {
+    "name": "Condiments",
+    "slugName": "condiments",
+    "image": "https://example.com/images/condiments.jpg"
+  }
+]   
