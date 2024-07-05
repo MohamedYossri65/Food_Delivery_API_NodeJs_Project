@@ -1,0 +1,218 @@
+ [
+      {
+        "name": "John Doe",
+        "email": "johndoe@example.com",
+        "password": "hashedpassword",
+        "phone": "12345678901",
+        "role": "user",
+        "passwordUpdatedAt": "2023-01-15T10:00:00Z",
+        "passwordResetToken": "resetToken123",
+        "passwordResetTokenExpiersAt": "2023-01-16T10:00:00Z",
+        "isActive": true,
+        "userLocation": {
+        "type": "point",
+        "coordinates": [-73.935242, 40.730610],
+        "address": "New York, NY, USA"
+        },
+        "createdAt": "2023-01-01T10:00:00Z",
+        "updatedAt": "2023-01-01T10:00:00Z"
+      },
+      {
+        "name": "Pizza Place",
+        "email": "contact@pizzaplace.com",
+        "password": "hashedpassword",
+        "phone": "09876543211",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-10T15:00:00Z",
+        "passwordResetToken": "resetToken456",
+        "passwordResetTokenExpiersAt": "2023-02-11T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-74.035974, 40.712776],
+          "address": "Jersey City, NJ, USA"
+        },
+        "createdAt": "2023-02-01T15:00:00Z",
+        "updatedAt": "2023-02-01T15:00:00Z"
+      },
+      {
+        "name": "Burger House",
+        "email": "contact@burgerhouse.com",
+        "password": "hashedpassword",
+        "phone": "09876543212",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-11T15:00:00Z",
+        "passwordResetToken": "resetToken457",
+        "passwordResetTokenExpiersAt": "2023-02-12T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-73.805974, 40.892776],
+          "address": "Yonkers, NY, USA"
+        },
+        "createdAt": "2023-02-02T15:00:00Z",
+        "updatedAt": "2023-02-02T15:00:00Z"
+      },
+      {
+        "name": "Sushi World",
+        "email": "contact@sushiworld.com",
+        "password": "hashedpassword",
+        "phone": "09876543213",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-12T15:00:00Z",
+        "passwordResetToken": "resetToken458",
+        "passwordResetTokenExpiersAt": "2023-02-13T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-73.835974, 40.512776],
+          "address": "Staten Island, NY, USA"
+        },
+        "createdAt": "2023-02-03T15:00:00Z",
+        "updatedAt": "2023-02-03T15:00:00Z"
+      },
+      {
+        "name": "Taco Town",
+        "email": "contact@tacotown.com",
+        "password": "hashedpassword",
+        "phone": "09876543214",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-13T15:00:00Z",
+        "passwordResetToken": "resetToken459",
+        "passwordResetTokenExpiersAt": "2023-02-14T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-74.285974, 40.512776],
+          "address": "Edison, NJ, USA"
+        },
+        "createdAt": "2023-02-04T15:00:00Z",
+        "updatedAt": "2023-02-04T15:00:00Z"
+      },
+      {
+        "name": "Pasta Palace",
+        "email": "contact@pastapalace.com",
+        "password": "hashedpassword",
+        "phone": "09876543215",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-14T15:00:00Z",
+        "passwordResetToken": "resetToken460",
+        "passwordResetTokenExpiersAt": "2023-02-15T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-73.635974, 40.712776],
+          "address": "Queens, NY, USA"
+        },
+        "createdAt": "2023-02-05T15:00:00Z",
+        "updatedAt": "2023-02-05T15:00:00Z"
+      },
+      {
+        "name": "Steak House",
+        "email": "contact@steakhouse.com",
+        "password": "hashedpassword",
+        "phone": "09876543216",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-15T15:00:00Z",
+        "passwordResetToken": "resetToken461",
+        "passwordResetTokenExpiersAt": "2023-02-16T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-74.185974, 40.812776],
+          "address": "Newark, NJ, USA"
+        },
+        "createdAt": "2023-02-06T15:00:00Z",
+        "updatedAt": "2023-02-06T15:00:00Z"
+      },
+      {
+        "name": "Noodle Nest",
+        "email": "contact@noodlenest.com",
+        "password": "hashedpassword",
+        "phone": "09876543217",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-16T15:00:00Z",
+        "passwordResetToken": "resetToken462",
+        "passwordResetTokenExpiersAt": "2023-02-17T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-74.035974, 41.012776],
+          "address": "Paterson, NJ, USA"
+        },
+        "createdAt": "2023-02-07T15:00:00Z",
+        "updatedAt": "2023-02-07T15:00:00Z"
+      },
+      {
+        "name": "Salad Spot",
+        "email": "contact@saladspot.com",
+        "password": "hashedpassword",
+        "phone": "09876543218",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-17T15:00:00Z",
+        "passwordResetToken": "resetToken463",
+        "passwordResetTokenExpiersAt": "2023-02-18T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-74.135974, 40.612776],
+          "address": "Elizabeth, NJ, USA"
+        },
+        "createdAt": "2023-02-08T15:00:00Z",
+        "updatedAt": "2023-02-08T15:00:00Z"
+      },
+      {
+        "name": "Dumpling Den",
+        "email": "contact@dumplingden.com",
+        "password": "hashedpassword",
+        "phone": "09876543219",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-18T15:00:00Z",
+        "passwordResetToken": "resetToken464",
+        "passwordResetTokenExpiersAt": "2023-02-19T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-74.085974, 40.512776],
+          "address": "Bayonne, NJ, USA"
+        },
+        "createdAt": "2023-02-09T15:00:00Z",
+        "updatedAt": "2023-02-09T15:00:00Z"
+      },
+      {
+        "name": "BBQ Barn",
+        "email": "contact@bbqbarn.com",
+        "password": "hashedpassword",
+        "phone": "09876543220",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-19T15:00:00Z",
+        "passwordResetToken": "resetToken465",
+        "passwordResetTokenExpiersAt": "2023-02-20T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-74.285974, 40.812776],
+          "address": "Hoboken, NJ, USA"
+        },
+        "createdAt": "2023-02-10T15:00:00Z",
+        "updatedAt": "2023-02-10T15:00:00Z"
+      },
+      {
+        "name": "Dessert Delights",
+        "email": "contact@dessertdelights.com",
+        "password": "hashedpassword",
+        "phone": "09876543221",
+        "role": "resturant",
+        "passwordUpdatedAt": "2023-02-20T15:00:00Z",
+        "passwordResetToken": "resetToken466",
+        "passwordResetTokenExpiersAt": "2023-02-21T15:00:00Z",
+        "isActive": true,
+        "userLocation": {
+          "type": "point",
+          "coordinates": [-74.235974, 40.912776],
+          "address": "Hackensack, NJ, USA"
+        },
+        "createdAt": "2023-02-11T15:00:00Z",
+        "updatedAt": "2023-02-11T15:00:00Z"
+      }
+]

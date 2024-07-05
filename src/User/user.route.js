@@ -14,4 +14,7 @@ userRouter.route('/:id')
     .delete(usercontroller.deleteOneUser)
     .patch(usercontroller.updateOneUser);
 
+
+userRouter.get('/get-restaurant-within/distance/:distance/lnglat/:lnglat' , usercontroller.getRestaurantWithin)
+
 export default userRouter;

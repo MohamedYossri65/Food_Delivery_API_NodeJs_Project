@@ -29,13 +29,9 @@ const userSchema = new mongoose.Schema({
         maxLength: [15, "the phone must be at most 15 characters"],
         trim: true
     },
-    address: {
-        type: String,
-        trim: true
-    },
     role: {
         type: String,
-        enum: ["user", "admin" ,"resturant"],
+        enum: ["user", "admin", "resturant"],
         default: "user"
     },
     passwordUpdatedAt: Date,
@@ -45,8 +41,24 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
         select: false
+    },
+    userLocation: {
+        type: {
+            type: String,
+            default: 'Point',
+            enum: ['Point']
+        },
+        coordinates: [Number],
+        address: {
+            type: String,
+            trim: true
+        }
     }
+
 }, { timestamps: true })
+
+
+userSchema.index({userLocation : '2dsphere'});
 
 // Middleware to hash password before saving a user document
 userSchema.pre('save', async function (next) {
@@ -57,7 +69,7 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
     if (this.role !== 'restaurant') {
         this.openNow = undefined;
     }

@@ -11,18 +11,11 @@ import express from 'express';
 import connectMongoDB from './database/dbConnections.js';
 import 'dotenv/config'
 import morgan from 'morgan';
-import foodRouter from './src/food/food.router.js';
-import globalErrorHandling from './src/middleware/globalErrorHandling.js';
-import AppError from './src/utils/AppError.js';
-import categoryRouter from './src/category/category.route.js';
-import authRouter from './src/auth/auth.router.js';
-import userRouter from './src/User/user.route.js';
-
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
-import reviewRouter from './src/review/review.route.js';
+import init from './src/server.routes.js';
 
 const app = express();
 // 1) GLOBAL MIDDLEWARES
@@ -50,24 +43,14 @@ if (process.env.NODE_ENV == 'development') {
     app.use(morgan('dev'));
 }
 
+init(app);
 // app.set('trust proxy', true);
 /*connect to dataBase */
 connectMongoDB();
 
-/*routs*/
-app.use('/api/v1/food', foodRouter);
-app.use('/api/v1/category', categoryRouter);
-app.use('/api/v1/user', userRouter);
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/review', reviewRouter);
 
-/*handel unknon routs */
-app.all('/*', (req, res, next) => {
-    next(new AppError(`this route ${req.originalUrl} is not found `, 404));
-})
 
-/*globel error handel */
-app.use(globalErrorHandling);
+
 
 /*listen to req and res */
 const port = process.env.PORT || 3000;

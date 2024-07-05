@@ -50,7 +50,7 @@ const signUp = catchAsyncError(async (req, res, next) => {
 
 const signIn = catchAsyncError(async (req, res, next) => {
     const { email, password } = req.body;
-    const user = await model.findOne({ email }).select('+password');
+    const user = await userModel.findOne({ email }).select('+password');
     if (!user || !(user.correctPassword(password, user.password))) {
         return next(new AppError('invalid email or password', 401));
     }
@@ -161,7 +161,7 @@ const protectedRouts = catchAsyncError(async (req, res, next) => {
     //3- decode token
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     //4- check if user exist or not
-    const currentUser = await modelUser.findById(decoded.id);
+    const currentUser = await userModel.findById(decoded.id);
     if (!currentUser) await resturantModel.findById(decoded.id);
     if (!currentUser) {
         return next(new AppError('The user belonging to this token does no longer exist.', 401));
@@ -177,7 +177,7 @@ const protectedRouts = catchAsyncError(async (req, res, next) => {
 });
 
 const allowedTo = (...roles) => {
-    return catchAsyncError((req, res, next) => {
+    return catchAsyncError(await(req, res, next) => {
         if (!roles.includes(req.user.role)) {
             return next(new AppError('you are not allowed to access this route', 403));
         }

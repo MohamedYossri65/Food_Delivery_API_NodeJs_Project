@@ -1,14 +1,14 @@
-//the methode to run this script : node ./src/dev-data/import-dev-data.js --delete or --import
+//the methode to run this script :  node ./src/dev-data/import-dev-data.js --delete or --import
 
 
 import mongoose from "mongoose";
 import 'dotenv/config'
 
 import foodModel from '../../database/models/foodModel.js';
-import resturantModel from '../../database/models/resturantModel.js';
 import categoryModel from '../../database/models/categoryModel.js';
 import userModel from './../../database/models/userModel.js';
 import fs from 'fs';
+import reviewModel from "../../database/models/reviewModel.js";
 
 
 
@@ -32,7 +32,7 @@ mongoose.connect(dbURl)
 // READ JSON FILE
 const foods = JSON.parse(fs.readFileSync(`./src/dev-data/food.json`, 'utf-8'));
 // const resturants = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
-// const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8'));
+const users = JSON.parse(fs.readFileSync(`./src/dev-data/user.json`, 'utf-8'));
 const categories = JSON.parse(
     fs.readFileSync(`./src/dev-data/category.json`, 'utf-8' ));
 
@@ -40,10 +40,10 @@ const categories = JSON.parse(
 // IMPORT DATA INTO DB
 const importData = async () => {
     try {
-        await foodModel.create(foods);
-        // await userModel.create(users, { validateBeforeSave: false });
+        // await foodModel.create(foods);
+        await userModel.create(users, { validateBeforeSave: false });
         // await resturantModel.create(resturants);
-        await categoryModel.create(categories);
+        // await categoryModel.create(categories);
         console.log('Data successfully loaded!');
     } catch (err) {
         console.log(err);
@@ -54,10 +54,10 @@ const importData = async () => {
 // DELETE ALL DATA FROM DB
 const deleteData = async () => {
     try {
-        await foodModel.deleteMany();
+        // await foodModel.deleteMany();
         await userModel.deleteMany();
-        await resturantModel.deleteMany();
-        await categoryModel.deleteMany();
+        // await reviewModel.deleteMany();
+        // await categoryModel.deleteMany();
         console.log('Data successfully deleted!');
     } catch (err) {
         console.log(err);

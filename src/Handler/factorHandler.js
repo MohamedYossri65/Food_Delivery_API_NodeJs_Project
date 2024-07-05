@@ -23,11 +23,11 @@ const addOne = (model, document) => {
                     { name: req.body.name }
                 ]
             }
-        }else if(model === categoryModel){
+        } else if (model === categoryModel) {
             options = {
                 $and: [
-                    { resturants:req.body.resturants },
-                    { name: req.body.name}
+                    { resturants: req.body.resturants },
+                    { name: req.body.name }
                 ]
             }
         }
@@ -50,11 +50,14 @@ const addOne = (model, document) => {
 }
 
 // Function to get all documents from the database
-const getAllDocuments = (model, document ,params) => {
+const getAllDocuments = (model, document, params) => {
     return catchAsyncError(async (req, res, next) => {
+        
+        
+
         let filter = {};
         if (req.params.categoryId && params) {
-            filter = {category :req.params.categoryId}
+            filter = { category: req.params.categoryId }
             console.log(filter);
         }
         // Apply query features like filter, pagination, sorting, limiting fields, and search
@@ -84,7 +87,7 @@ const getAllDocuments = (model, document ,params) => {
 }
 
 // Function to get a single document by ID from the database
-const getOne = (model, document ) => {
+const getOne = (model, document) => {
     return catchAsyncError(async (req, res, next) => {
         // Find document by ID
         let query = model.findById(req.params.id);
