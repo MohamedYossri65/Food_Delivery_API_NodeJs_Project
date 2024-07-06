@@ -1,11 +1,12 @@
 import express from 'express';
 import * as reviewController from './review.controller.js';
+import { protectedRouts } from '../auth/auth.controller.js';
 
 const reviewRouter = express.Router();
 
 
 reviewRouter.route('/')
-    .post(reviewController.addReview)
+    .post(protectedRouts ,reviewController.addReview)
     .get(reviewController.getAllReviews);   
 
     reviewRouter.get('/calcRating' ,reviewController.calcRating )

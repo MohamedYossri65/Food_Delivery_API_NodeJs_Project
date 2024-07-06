@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import cryptography from "cryptography";
+import { type } from "os";
 
 
 const userSchema = new mongoose.Schema({
@@ -53,6 +54,17 @@ const userSchema = new mongoose.Schema({
             type: String,
             trim: true
         }
+    },
+    orderedFood:{
+        type: Number,
+        default: 0
+    },
+    canceledOrder:{
+        type: Number,
+        default: 0
+    },
+    lastCancellationTime:{
+        type: Date
     }
 
 }, { timestamps: true })

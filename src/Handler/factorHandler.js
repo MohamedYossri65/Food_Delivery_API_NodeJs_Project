@@ -17,6 +17,7 @@ const addOne = (model, document) => {
             ]
         }
         if (model === reviewModel) {
+            req.body.user = req.user._id;
             options = {
                 $and: [
                     { user: req.body.user },
@@ -37,6 +38,7 @@ const addOne = (model, document) => {
         if (isFound) return next(new AppError(`this ${document} is already entered before!!`, 409));
 
         // Create and save the new document
+        
         const result = new model(req.body);
         await result.save();
 
@@ -52,13 +54,11 @@ const addOne = (model, document) => {
 // Function to get all documents from the database
 const getAllDocuments = (model, document, params) => {
     return catchAsyncError(async (req, res, next) => {
-        
-        
-
         let filter = {};
         if (req.params.categoryId && params) {
             filter = { category: req.params.categoryId }
-            console.log(filter);
+        }else if(req.params.userId && params){
+            filter = { restaurant: req.params.userId }
         }
         // Apply query features like filter, pagination, sorting, limiting fields, and search
         let features = new ApiFeatures(model.find(filter), req.query)

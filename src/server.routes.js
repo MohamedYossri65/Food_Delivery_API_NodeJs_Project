@@ -5,6 +5,8 @@ import categoryRouter from './category/category.route.js';
 import authRouter from './auth/auth.router.js';
 import userRouter from './User/user.route.js';
 import reviewRouter from './review/review.route.js';
+import cartRouter from './cart/cart.router.js';
+import orderRouter from './order/order.router.js';
 
 const init = (app) => {
     /*----------------------------------- */
@@ -14,6 +16,8 @@ const init = (app) => {
     app.use('/api/v1/user', userRouter);
     app.use('/api/v1/auth', authRouter);
     app.use('/api/v1/review', reviewRouter);
+    app.use('/api/v1/cart', cartRouter);
+    app.use('/api/v1/orders', orderRouter);
     /*----------------------------------- */
     /*handel unknon routs */
     app.all('/*', (req, res, next) => {

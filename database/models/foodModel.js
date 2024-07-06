@@ -31,24 +31,6 @@ const foodSchema = new mongoose.Schema({
         ref: 'user',
         required: [true, "the resturant id is required"]
     },
-    soldOut: {
-        type: Boolean,
-        default: false
-    },
-    soldedQuantity: {
-        type: Number,
-        default: 0
-    },
-    discount: {
-        type: Number,
-        default: 0
-    },
-    rate: {
-        type: Number,
-        min: 1,
-        max: 5,
-        default: 1
-    },
     rateSum: {
         type: Number,
         default: 0
@@ -57,6 +39,22 @@ const foodSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    discount: {
+        type: Number,
+        default: 0
+    },
+    quantity: {
+        type: Number,
+        default: 0
+    },
+    soldOut: {
+        type: Boolean,
+        default: false
+    },
+    soldedQuantity: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
@@ -87,6 +85,7 @@ foodSchema.pre(/^find/, function () {
         path: 'reviews',
         select: '-__v -createdAt -updatedAt '
     })
+    this.select('-__v -createdAt -updatedAt ')
 })
 
 const foodModel = mongoose.model("food", foodSchema);

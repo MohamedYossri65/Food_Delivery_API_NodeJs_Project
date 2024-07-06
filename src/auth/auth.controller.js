@@ -21,7 +21,7 @@ const createSendToken = (user, statusCode, response, message) => {
         httpOnly: true
     }
     if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-    res.cookie('jwt', token, cookieOptions);
+    response.cookie('jwt', token, cookieOptions);
     response.status(statusCode).json({
         status: 'success',
         message: message,
@@ -38,7 +38,13 @@ const signUp = catchAsyncError(async (req, res, next) => {
     const user = await userModel.findOne({ email: req.body.email });
     if (user) return next(new AppError(`this ${document} is already signed Up before!!`, 409));
     checkConfirmPassword(req);
+    
     const result = new userModel(req.body);
+    result.userLocation = req.body.userLocation ? {
+        type: 'Point',
+        coordinates: req.body.userLocation.coordinates
+    } : undefined
+
     await result.save();
 
     res.json({
@@ -162,7 +168,6 @@ const protectedRouts = catchAsyncError(async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     //4- check if user exist or not
     const currentUser = await userModel.findById(decoded.id);
-    if (!currentUser) await resturantModel.findById(decoded.id);
     if (!currentUser) {
         return next(new AppError('The user belonging to this token does no longer exist.', 401));
     }
@@ -177,7 +182,7 @@ const protectedRouts = catchAsyncError(async (req, res, next) => {
 });
 
 const allowedTo = (...roles) => {
-    return catchAsyncError(await(req, res, next) => {
+    return catchAsyncError(async(req, res, next) => {
         if (!roles.includes(req.user.role)) {
             return next(new AppError('you are not allowed to access this route', 403));
         }
