@@ -1,13 +1,13 @@
 import foodRouter from './food/food.router.js';
 import globalErrorHandling from './middleware/globalErrorHandling.js';
 import AppError from './utils/AppError.js';
-import categoryRouter from './category/category.route.js';
 import authRouter from './auth/auth.router.js';
 import  { userRouter,restaurantRouter } from './User/user.route.js';
 import reviewRouter from './review/review.route.js';
 import cartRouter from './cart/cart.router.js';
 import orderRouter from './order/order.router.js';
 import notificationRouter from './notification/notification.router.js';
+import categoryRouter from './Category/category.route';
 
 const init = (app) => {
     /*----------------------------------- */
