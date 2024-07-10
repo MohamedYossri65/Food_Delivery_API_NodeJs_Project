@@ -2,3 +2,5 @@
 /.env
 /.elintrc.json
 /.prettierrc
+
+/dev-data
