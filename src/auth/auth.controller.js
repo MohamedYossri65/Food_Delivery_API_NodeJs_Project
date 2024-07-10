@@ -8,11 +8,17 @@ import jwt from 'jsonwebtoken';
 
 
 const createSendToken = (user, statusCode, response, message) => {
-    const token = jwt.sign({
+
+    const accessToken = jwt.sign({
         id: user._id,
         email: user.email,
         name: user.name
-    }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_EXPIRES_IN });;
+    }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN });
+
+    const refreshToken = jwt.sign({
+        name: user.name,
+        id: user._id
+    }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN });
 
     const cookieOptions = {
         expires: new Date(
@@ -21,11 +27,11 @@ const createSendToken = (user, statusCode, response, message) => {
         httpOnly: true
     }
     if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-    response.cookie('jwt', token, cookieOptions);
+    response.cookie('jwt', refreshToken, cookieOptions);
     response.status(statusCode).json({
         status: 'success',
         message: message,
-        token
+        accessToken
     });
 }
 
@@ -54,7 +60,7 @@ const signUp = catchAsyncError(async (req, res, next) => {
         data: result
     });
 });
-
+/*==============================================================================  */
 const signIn = catchAsyncError(async (req, res, next) => {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email }).select('+password');
@@ -63,7 +69,7 @@ const signIn = catchAsyncError(async (req, res, next) => {
     }
     createSendToken(user, 200, res, 'logged in successfully');
 })
-
+/*============================================================================== * */
 const forgetPsssword = catchAsyncError(async (req, res, next) => {
     //1- get user 
     const user = await userModel.findOne({ email: req.body.email });
@@ -90,7 +96,7 @@ const forgetPsssword = catchAsyncError(async (req, res, next) => {
     });
 
 })
-
+/*============================================================================== * */
 const resetPsssword = catchAsyncError(async (req, res, next) => {
     const hashedToken = cryptography.encryptSync(req.params.token);
     const user = await userModel.findOne({
@@ -112,7 +118,7 @@ const resetPsssword = catchAsyncError(async (req, res, next) => {
 
     createSendToken(user, 200, res, 'password updated successfully');
 })
-
+/*============================================================================== * */
 const updatePassword = catchAsyncError(async (req, res, next) => {
     const user = await userModel.findOne({ email: req.user.email })
     if (!user) {
@@ -132,7 +138,7 @@ const updatePassword = catchAsyncError(async (req, res, next) => {
     createSendToken(user, 200, res, 'password updated successfully');
 
 })
-
+/*============================================================================== * */
 const updateMe = catchAsyncError(async (req, res, next) => {
     if(req.file) req.body.image = req.file.filename;
     const updatedUser = await userModel.findByIdAndUpdate(req.user._id, req.body, { new: true });
@@ -143,7 +149,7 @@ const updateMe = catchAsyncError(async (req, res, next) => {
     });
 
 })
-
+/*============================================================================== */
 const deleteMe = catchAsyncError(async (req, res, next) => {
     if (Object.keys(req.body).length) {
         return next(new AppError('Request body must be empty', 400));
@@ -157,21 +163,53 @@ const deleteMe = catchAsyncError(async (req, res, next) => {
 
 })
 
-
-/******************************************************* */
-const protectedRouts = catchAsyncError(async (req, res, next) => {
-    // 1- check if token found in header or not 
-    let token = undefined;
-    if (!req.headers.authorization && !req.headers.authorization?.startsWith('Bearer ')) {
+/*================================Refrech Token================================== */
+const refreshToken = catchAsyncError(async(req, res ,next) => {
+    // 1- check if token found in coocki or not
+    let refreshToken = undefined;
+    if (!req.cookies?.jwt) {
         return next(new AppError('You are not logged in! Please log in to get access.', 401));
     }
-    token = req.headers.authorization.split(' ')[1];
-    //3- decode token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    refreshToken = req.cookies.jwt;
+    //3- decode refreshToken
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     //4- check if user exist or not
     const currentUser = await userModel.findById(decoded.id);
     if (!currentUser) {
-        return next(new AppError('The user belonging to this token does no longer exist.', 401));
+        return next(new AppError('The user belonging to this refreshToken does no longer exist.', 401));
+    }
+    //5- check if token is valid token or expired
+    if (currentUser.changePasswordAfter(decoded.iat)) {
+        return next(new AppError('User recently changed password! Please log in again.', 401));
+    }
+    //6- create new accessToken and send
+    const accessToken = jwt.sign({
+        id: currentUser._id,
+        email: currentUser.email,
+        name: currentUser.name
+    }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN });
+
+    res.status(201).json({
+        status: 'success',
+        message: 'new access token',
+        accessToken
+    });
+})
+
+/*================================================================================*/
+const protectedRouts = catchAsyncError(async (req, res, next) => {
+    // 1- check if token found in header or not 
+    let accessToken = undefined;
+    if (!req.headers.authorization && !req.headers.authorization?.startsWith('Bearer ')) {
+        return next(new AppError('You are not logged in! Please log in to get access.', 401));
+    }
+    accessToken = req.headers.authorization.split(' ')[1];
+    //3- decode accessToken
+    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
+    //4- check if user exist or not
+    const currentUser = await userModel.findById(decoded.id);
+    if (!currentUser) {
+        return next(new AppError('The user belonging to this accessToken does no longer exist.', 401));
     }
     //5- check if token is valid token or expired
 
@@ -195,5 +233,5 @@ const allowedTo = (...roles) => {
 export {
     signUp, signIn, protectedRouts, allowedTo,
     forgetPsssword, resetPsssword, updatePassword, updateMe,
-    deleteMe
+    deleteMe ,refreshToken
 };

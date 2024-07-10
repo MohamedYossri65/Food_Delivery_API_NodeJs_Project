@@ -25,6 +25,9 @@ authRouter.patch('/updateme', authcontroller.protectedRouts, uploadSingleFile('u
 authRouter.post('/deleteme', authcontroller.protectedRouts, authcontroller.deleteMe);
 
 
+authRouter.post('/refresh', authcontroller.refreshToken);
+
+
 
 
 

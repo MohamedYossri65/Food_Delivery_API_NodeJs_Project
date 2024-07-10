@@ -18,6 +18,7 @@ import init from './src/server.routes.js';
 import { limiter } from './src/middleware/rateLimit.js';
 import initSocket from './src/utils/socketIo.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const server = initSocket(app);
@@ -31,15 +32,20 @@ app.use('/api', limiter);
 
 // use it before all route definitions
 app.use(cors());
+// Data sanitization against NoSQL query injection
+app.use(ExpressMongoSanitize());
+// Data sanitization against XSS
+app.use(xss());
+
+
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '100kb' }));
 
 app.use(express.static('uploads'));
 app.use(express.urlencoded({extended: true}));
-// Data sanitization against NoSQL query injection
-app.use(ExpressMongoSanitize());
-// Data sanitization against XSS
-app.use(xss());
+
+// Cookie parser, reading cookies into req.cookies
+app.use(cookieParser());
 
 if (process.env.NODE_ENV == 'development') {
     app.use(morgan('dev'));

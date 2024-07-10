@@ -6,6 +6,7 @@ import * as factorHandler from '../Handler/factorHandler.js'
 const handelImages = (req, res, next) => {
     // Extract and save image filenames from request files
     if (!req.files) return next();
+    if (!req.files.imageCover) return next();
     req.body.images=[];
 
     req.body.imageCover = req.files.imageCover[0].filename;

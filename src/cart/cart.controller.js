@@ -61,6 +61,7 @@ const isRestaurantOpen = async (restaurantId) => {
     return restaurant.openNow;
 };
 
+/*=========================================================================================*/
 const addToCart = catchAsyncError(async (req, res, next) => {
     // 1. Get the food item by ID
     let food = await findFood(req, next);
@@ -106,9 +107,14 @@ const addToCart = catchAsyncError(async (req, res, next) => {
 });
 
 
-
+/*=========================================================================================*/
 const deleteProductFromCart = catchAsyncError(async (req, res, next) => {
+
     // 1. Check if the id is a food id
+    const cart = await cartModel.findById(req.user.id);
+    if (!cart || !cart.item[0]) return next(new AppError('Cart is empty or not found', 404));
+
+
     const food = await foodModel.findById(req.params.id);
     if (!food) return next(new AppError('food not found', 404));
 
@@ -118,7 +124,6 @@ const deleteProductFromCart = catchAsyncError(async (req, res, next) => {
     }, { $pull: { item: { food: req.params.id } } },
         { new: true });
 
-    if (!updatedCart) return next(new AppError('Cart not found', 404));
     // 5- calculate the total price of the food
     calcTotalPrice(updatedCart);
     // 6- save the cart to db
@@ -132,7 +137,7 @@ const deleteProductFromCart = catchAsyncError(async (req, res, next) => {
 
 });
 
-
+/*=========================================================================================*/
 const updateQuantity = catchAsyncError(async (req, res, next) => {
     // 1- get the food id
     const food = await foodModel.findById(req.body.food);
@@ -162,6 +167,7 @@ const updateQuantity = catchAsyncError(async (req, res, next) => {
 
 });
 
+/*=========================================================================================*/
 const getLoggedUserCart = catchAsyncError(async (req, res, next) => {
     let cartItems = await cartModel.findOne({ user: req.user._id }).populate({ path: 'item.food', select: 'name price' });
 

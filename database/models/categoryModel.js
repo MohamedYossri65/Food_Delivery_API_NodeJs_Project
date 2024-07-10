@@ -14,21 +14,14 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required: [true, "the image of the category is required"],
         trim: true
-    },
-    resturant: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'user'
-        }
-    ]
+    }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 })
 
-// Create a compound index on name and description to ensure uniqueness
-categorySchema.index({ name: 1, resturants: 1 }, { unique: true });
+
 
 
 categorySchema.pre('save', function () {
