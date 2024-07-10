@@ -36,9 +36,10 @@ const checkConfirmPassword = (req) => {
 
 const signUp = catchAsyncError(async (req, res, next) => {
     const user = await userModel.findOne({ email: req.body.email });
-    if (user) return next(new AppError(`this ${document} is already signed Up before!!`, 409));
+    if (user) return next(new AppError(`this user is already signed Up before!!`, 409));
     checkConfirmPassword(req);
     
+    if(req.file) req.body.image = req.file.filename;
     const result = new userModel(req.body);
     result.userLocation = req.body.userLocation ? {
         type: 'Point',
@@ -73,7 +74,7 @@ const forgetPsssword = catchAsyncError(async (req, res, next) => {
     const resetToken = user.createResetPasswordToken();
     await user.save({ validateBeforeSave: false });
     // 3) Send it to user's email
-    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/auth/resetPassword/${resetToken}`;
     const message = `Forgot your password? Submit  click to this link: ${resetURL} \n If you didn't forget your password, please ignore this email!`
     const result = await sendEmail(user.email, message);
 
@@ -133,6 +134,7 @@ const updatePassword = catchAsyncError(async (req, res, next) => {
 })
 
 const updateMe = catchAsyncError(async (req, res, next) => {
+    if(req.file) req.body.image = req.file.filename;
     const updatedUser = await userModel.findByIdAndUpdate(req.user._id, req.body, { new: true });
     res.status(200).json({
         status: 'success',

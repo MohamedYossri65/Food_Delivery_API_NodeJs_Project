@@ -15,8 +15,6 @@ orderRouter.get('/user', protectedRouts, allowedTo('user'),
     ordercontroller.getAllOrdersforOneUser);
 
 orderRouter.route('/:id')
-//     .get(ordercontroller.getOneOrder)
-    .patch(protectedRouts, allowedTo('user'),ordercontroller.cancelOrder)
-//     .patch(ordercontroller.updateOneOrder);
+    .patch(protectedRouts, allowedTo('user'),ordercontroller.cancelOrder);
 
 export default orderRouter;

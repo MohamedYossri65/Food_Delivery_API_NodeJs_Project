@@ -1,17 +1,17 @@
 import express from 'express';
 import * as cartcontroller from './cart.controller.js';
-import { protectedRouts } from '../auth/auth.controller.js';
+import { allowedTo, protectedRouts } from '../auth/auth.controller.js';
 
 const cartRouter = express.Router();
 
 
 cartRouter.route('/')
-    .post(protectedRouts, cartcontroller.addToCart)
+    .post(protectedRouts, allowedTo('user'), cartcontroller.addToCart)
     .get(protectedRouts, cartcontroller.getLoggedUserCart);
 
-cartRouter.put('/', protectedRouts, cartcontroller.updateQuantity);
+cartRouter.put('/', protectedRouts, allowedTo('user'), cartcontroller.updateQuantity);
 
 cartRouter.route('/:id')
-    .delete(protectedRouts, cartcontroller.deleteProductFromCart)
+    .delete(protectedRouts, allowedTo('user'), cartcontroller.deleteProductFromCart)
 
 export default cartRouter;

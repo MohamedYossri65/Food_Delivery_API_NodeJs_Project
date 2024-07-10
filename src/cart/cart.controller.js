@@ -3,6 +3,7 @@ import cartModel from './../../database/models/cartModel.js';
 import catchAsyncError from './../utils/catchAsyncError.js';
 import AppError from './../utils/AppError.js';
 import foodModel from './../../database/models/foodModel.js';
+import userModel from '../../database/models/userModel.js';
 
 function calcTotalPrice(cart) {
     let totalPrice = 0;
@@ -37,8 +38,8 @@ const checkFoodQuantity = (req, next, userCart, food) => {
     return itemFound;
 }
 
-const UpdateFoodQuantity = async (req, userCart, food ,itemFound) => {
-    
+const UpdateFoodQuantity = async (req, userCart, food, itemFound) => {
+
     if (itemFound) {
         itemFound.quantity += req.body.quantity || 1;
     } else {
@@ -52,19 +53,48 @@ const UpdateFoodQuantity = async (req, userCart, food ,itemFound) => {
     await userCart.save();
 }
 
+const isRestaurantOpen = async (restaurantId) => {
+    const restaurant = await userModel.findById(restaurantId);
+    if (!restaurant) {
+        throw new AppError('Restaurant not found', 404);
+    }
+    return restaurant.openNow;
+};
 
 const addToCart = catchAsyncError(async (req, res, next) => {
     // 1. Get the food item by ID
     let food = await findFood(req, next);
-
+    // check if restaurant is open or not
+    const isOpen = await isRestaurantOpen(food.resturant);
+    if (!isOpen) {
+        return next(new AppError('Restaurant is closed now', 400));
+    }
     // 2. Check if the user has a cart, if not, create a new cart
     let userCart = await findCart(req, next);
 
+
+    // check that the user add foods from one restaurant in the cart
+    if (userCart.item[0]) {
+        let restaurantInCart = false;
+        userCart.item.forEach(item => {
+            console.log(item.restaurant._id );
+            console.log(food.resturant );
+            if (item.restaurant._id.toString() === food.resturant.toString()) {
+                restaurantInCart = true;
+            }
+        });
+        if (!restaurantInCart) {
+            return next(
+                new AppError(`You can only add foods from one restaurant in the cart please complete this order and make a new order from new restaurant`, 400));
+        }
+    }
+
     // 3. Check if the food item is already in the cart and food quantity in db
-    let itemFound =await  checkFoodQuantity(req, next, userCart, food);
+    let itemFound = await checkFoodQuantity(req, next, userCart, food);
+
 
     // 4. Update the quantity if the item is already in the cart, otherwise add it as a new item
-    await  UpdateFoodQuantity(req, userCart, food ,itemFound);
+    await UpdateFoodQuantity(req, userCart, food, itemFound);
 
 
     // 8. Send the response with the updated cart
@@ -112,13 +142,13 @@ const updateQuantity = catchAsyncError(async (req, res, next) => {
 
     let userCart = await cartModel.findOne({ user: req.user._id });
 
-    let itemFound = checkFoodQuantity (req, next, userCart, food)
+    let itemFound = checkFoodQuantity(req, next, userCart, food)
 
     if (!itemFound) {
         return next(new AppError('item not in the cart!!', 404));
     }
     itemFound.quantity = req.body.quantity || 1;
-    
+
     // 5- calculate the total price of the food
     calcTotalPrice(userCart);
     // 6- save the cart to db

@@ -54,7 +54,9 @@ const foodSchema = new mongoose.Schema({
     soldedQuantity: {
         type: Number,
         default: 0
-    }
+    },
+    imageCover: String,
+    images: [String]
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
@@ -80,12 +82,21 @@ foodSchema.pre('save', function (next) {
     next();
 });
 
-foodSchema.pre(/^find/, function () {
+foodSchema.pre('save', function () {
+    this.imageCover = process.env.BASE_URL + 'food/' + this.imageCover;
+
+    this.images = this.images.map((image)=> image = process.env.BASE_URL + 'food/' + image);
+});
+
+foodSchema.pre(/^findOne/, function () {
     this.populate({
         path: 'reviews',
         select: '-__v -createdAt -updatedAt '
     })
     this.select('-__v -createdAt -updatedAt ')
+})
+foodSchema.pre(/^find/, function () {
+    this.sort({rateSum: -1 ,soldedQuantity: -1 })
 })
 
 const foodModel = mongoose.model("food", foodSchema);

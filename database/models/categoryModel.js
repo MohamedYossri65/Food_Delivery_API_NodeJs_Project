@@ -35,6 +35,11 @@ categorySchema.pre('save', function () {
     this.slugName = slugify(this.name);
 })
 
+
+categorySchema.pre('save', function () {
+    this.image = process.env.BASE_URL + 'food/' + this.image;
+});
+
 categorySchema.pre(/^find/, function () {
     this.populate({
         path: 'foods',

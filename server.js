@@ -11,37 +11,40 @@ import express from 'express';
 import connectMongoDB from './database/dbConnections.js';
 import 'dotenv/config'
 import morgan from 'morgan';
-import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import init from './src/server.routes.js';
+import { limiter } from './src/middleware/rateLimit.js';
+import initSocket from './src/utils/socketIo.js';
+import cors from 'cors';
 
 const app = express();
+const server = initSocket(app);
+
+
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
 app.use(helmet());
 
-const limiter = rateLimit({
-    max: 100,
-    windowMs: 60 * 60 * 1000, // 1 hour
-    message: 'Too many requests from this IP, please try again in an hour.'
-})
 app.use('/api', limiter);
 
-
+// use it before all route definitions
+app.use(cors());
 // Body parser, reading data from body into req.body
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '100kb' }));
 
+app.use(express.static('uploads'));
+app.use(express.urlencoded({extended: true}));
 // Data sanitization against NoSQL query injection
 app.use(ExpressMongoSanitize());
-
 // Data sanitization against XSS
 app.use(xss());
 
 if (process.env.NODE_ENV == 'development') {
     app.use(morgan('dev'));
 }
+
 
 init(app);
 // app.set('trust proxy', true);
@@ -54,7 +57,7 @@ connectMongoDB();
 
 /*listen to req and res */
 const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
+server.listen(port, () => {
     console.log(`server is running on port ${port}...💯`);
 });
 

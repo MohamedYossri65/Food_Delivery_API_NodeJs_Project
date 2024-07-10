@@ -55,22 +55,29 @@ const userSchema = new mongoose.Schema({
             trim: true
         }
     },
-    orderedFood:{
+    orderedFood: {
         type: Number,
         default: 0
     },
-    canceledOrder:{
+    canceledOrder: {
         type: Number,
         default: 0
     },
-    lastCancellationTime:{
+    lastCancellationTime: {
         type: Date
+    },
+    openNow: {
+        type: Boolean,
+        default: false
+    },
+    image: {
+        type: String,
+        default: 'default.jpeg'
     }
-
 }, { timestamps: true })
 
 
-userSchema.index({userLocation : '2dsphere'});
+userSchema.index({ userLocation: '2dsphere' });
 
 // Middleware to hash password before saving a user document
 userSchema.pre('save', async function (next) {
@@ -82,10 +89,26 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.pre('save', function (next) {
-    if (this.role !== 'restaurant') {
+    if (this.role !== 'resturant') {
         this.openNow = undefined;
     }
     next();
+});
+userSchema.pre('save', function () {
+    if (this.role !== 'resturant') {
+        this.image = undefined;
+        return;
+    }
+    this.image = process.env.BASE_URL + 'users/' + this.image;
+});
+userSchema.pre('save', function () {
+    if (this.role == 'resturant' || this.role == 'admin') {
+        this.canceledOrder = undefined;
+        this.lastCancellationTime = undefined;
+        this.orderedFood = undefined;
+        return;
+    }
+    this.openNow = undefined
 });
 
 userSchema.pre(/^find/, async function () {

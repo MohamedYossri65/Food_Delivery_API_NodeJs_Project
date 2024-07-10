@@ -5,11 +5,22 @@ import AppError from './../utils/AppError.js';
 import foodModel from '../../database/models/foodModel.js';
 import userModel from '../../database/models/userModel.js';
 import moment from 'moment';
+import notificationModel from '../../database/models/notificationModel.js';
 
 
 /*==========================================add order============================================== */
 
 // Helper Functions
+const sendNotificationToRestaurant = async (user, order, content) => {
+    const result = new notificationModel({
+        sender: user._id,
+        reciever: order.items[0].restaurant._id,
+        content,
+        order: order
+    })
+    await result.save();
+}
+
 
 const getUserCart = async (userId, next) => {
     const userCart = await cartModel.findOne({ user: userId });
@@ -40,7 +51,7 @@ const createOrder = async (userId, userCart, req) => {
 
     const order = new orderModel({
         user: userId,
-        item: userCart.item,
+        items: userCart.item,
         totalPrice: userCart.totalPrice,
     });
 
@@ -57,7 +68,7 @@ const createOrder = async (userId, userCart, req) => {
 const updateFoodQuantity = async (order, next) => {
     // 4. Update the food quantities in the database
     let food = {};
-    for (let item of order.item) {
+    for (let item of order.items) {
         food = await foodModel.findById(item.food);
         if (!food) {
             return next(new AppError('Food not found', 404));
@@ -72,9 +83,6 @@ const updateFoodQuantity = async (order, next) => {
             soldedQuantity: food.soldedQuantity
         })
         // TODO:
-        // Send notification to the food vendor about the order
-        // await sendNotificationToVendor(food.vendor, order);
-
         // Send notification to the user about the order
         // await sendNotificationToUser(order.user, order);
 
@@ -89,6 +97,7 @@ const updateUserCancellationInfo = async (userId) => {
         lastCancellationTime: Date.now()
     });
 };
+
 const updateUserOrderInfo = async (userId) => {
     await userModel.findByIdAndUpdate(userId, {
         $inc: { orderedFood: 1 }
@@ -119,7 +128,7 @@ const canCreateOrder = (req, next) => {
 const addOrder = catchAsyncError(async (req, res, next) => {
     // Check if the user can create an order
     if (!(canCreateOrder(req, next))) return;
-    
+
     // 1. Get the user's cart
     const userCart = await getUserCart(req.user._id, next);
     if (!userCart) return; // If no cart or empty cart, getUserCart will handle the error response
@@ -142,6 +151,9 @@ const addOrder = catchAsyncError(async (req, res, next) => {
     await cartModel.findOneAndUpdate({ user: req.user._id }, { $set: { 'item': [] }, totalPrice: 0 }, { new: true });
 
     await updateUserOrderInfo(req.user._id);
+
+    // 5. Send notification to the restaurant about the order
+    await sendNotificationToRestaurant(req.user._id,order._id ,"you have new order");
     // 5. Send the response with the new order
     res.status(201).json({
         status: 'success',
@@ -165,14 +177,11 @@ const fetchOrders = async (filter, next) => {
 
 // Controller to get all orders for one restaurant
 const getAllOrdersforOnerestaurant = catchAsyncError(async (req, res, next) => {
-    const orders = await fetchOrders({
-        item: {
+    orders = await fetchOrders({
+        items: {
             $elemMatch: { restaurant: req.user._id }
         }
     }, next);
-
-    if (!orders) return;
-
     res.status(200).json({
         status: 'success',
         message: 'Orders found successfully',
@@ -232,6 +241,7 @@ const updateOrderStatus = async (orderId, status, next) => {
     }
 };
 
+
 // Controller Function to cancel an order
 const cancelOrder = catchAsyncError(async (req, res, next) => {
     // 1. Check if the order exists
@@ -252,8 +262,8 @@ const cancelOrder = catchAsyncError(async (req, res, next) => {
     const updatedOrder = await updateOrderStatus(order._id, 'cancelled', next);
     if (!updatedOrder) return; // If update fails, updateOrderStatus will handle the error response
 
-    // 5. Send a notification to the user about the cancellation
-    // TODO: Implement sendNotificationToUser(req.user, 'Your order has been cancelled.');
+    // 5. Send a notification to the restaurant about the cancellation
+    await sendNotificationTorestaurant(req.user, order._id, 'sorry!! this order have been canceled');
 
     // 6. Log the cancellation
     // TODO: Implement logCancellation(order);
@@ -270,4 +280,4 @@ const cancelOrder = catchAsyncError(async (req, res, next) => {
 /*======================================================================================== */
 
 
-export { addOrder, getAllOrdersforOnerestaurant, getAllOrdersforOneUser, cancelOrder  ,canCreateOrder}
+export { addOrder, getAllOrdersforOnerestaurant, getAllOrdersforOneUser, cancelOrder }

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-    item: [
+    items: [
         {
             food: {
                 type: mongoose.Schema.ObjectId,
@@ -68,8 +68,8 @@ const orderSchema = new mongoose.Schema({
 orderSchema.index({ shippingAddress: '2dsphere' });
 
 orderSchema.pre(/^find/, function () {
-    this.populate({ path: 'user', select: '-__v -_id -role -userLocation' })
-        .populate({ path: 'item.food', select: 'name' }).sort({ createdAt: -1  })
+    this.populate({ path: 'user', select: 'name phone' })
+        .populate({ path: 'items.food', select: 'name' }).sort({ createdAt: -1 })
 })
 
 const orderModel = mongoose.model("order", orderSchema);

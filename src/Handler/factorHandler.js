@@ -6,39 +6,47 @@ import AppError from "../utils/AppError.js";
 import catchAsyncError from "../utils/catchAsyncError.js";
 
 
+
+const handelOptions = (model , req)=>{
+    let options = {
+        $and: [
+            { name: req.body.name },
+            { description: req.body.description }
+        ]
+    }
+    if (model === reviewModel) {
+        req.body.user = req.user._id;
+        options = {
+            $and: [
+                { user: req.body.user },
+                { name: req.body.name }
+            ]
+        }
+    } else if (model === categoryModel) {
+        options = {
+            $and: [
+                { resturants: req.body.resturants },
+                { name: req.body.name }
+            ]
+        }
+    }
+    return options;
+}
 // Function to add a document to the database
 const addOne = (model, document) => {
     return catchAsyncError(async (req, res, next) => {
         // Check if a document with the same name and description already exists
-        let options = {
-            $and: [
-                { name: req.body.name },
-                { description: req.body.description }
-            ]
+        const options = handelOptions(model , req);
+        
+        if (req.file && document == 'category') {
+            req.body.image = req.file.filename;
         }
-        if (model === reviewModel) {
-            req.body.user = req.user._id;
-            options = {
-                $and: [
-                    { user: req.body.user },
-                    { name: req.body.name }
-                ]
-            }
-        } else if (model === categoryModel) {
-            options = {
-                $and: [
-                    { resturants: req.body.resturants },
-                    { name: req.body.name }
-                ]
-            }
-        }
-
         let isFound = await model.findOne(options);
         // If found, return a conflict error
         if (isFound) return next(new AppError(`this ${document} is already entered before!!`, 409));
 
         // Create and save the new document
-        
+
         const result = new model(req.body);
         await result.save();
 
@@ -57,7 +65,7 @@ const getAllDocuments = (model, document, params) => {
         let filter = {};
         if (req.params.categoryId && params) {
             filter = { category: req.params.categoryId }
-        }else if(req.params.userId && params){
+        } else if (req.params.userId && params) {
             filter = { restaurant: req.params.userId }
         }
         // Apply query features like filter, pagination, sorting, limiting fields, and search
@@ -125,7 +133,16 @@ const deleteOne = (model, document) => {
 const updateOne = (model, document) => {
     return catchAsyncError(async (req, res, next) => {
         // Find and update document by ID, return the updated document
-        const result = await model.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        let id = undefined;
+        if (req.params.id) {
+            id = req.params.id;
+        } else {
+            id = req.user._id
+        }
+        if (req.file && document == 'category') {
+            req.body.image = req.file.filename;
+        }
+        result = await model.findByIdAndUpdate(id, req.body, { new: true });
         // If not found, return a not found error
         if (!result) return next(new AppError(`${document} not found`, 404));
 

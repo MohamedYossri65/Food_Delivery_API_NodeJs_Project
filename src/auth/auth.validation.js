@@ -12,7 +12,8 @@ const updateMeSchema = Joi.object({
     ,
     phone: Joi.string().length(11)
     ,
-    address: Joi.string().length(40)
+    address: Joi.string().length(40),
+    image: Joi.string()
 })
 
 
