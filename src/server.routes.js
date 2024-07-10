@@ -7,7 +7,7 @@ import reviewRouter from './review/review.route.js';
 import cartRouter from './cart/cart.router.js';
 import orderRouter from './order/order.router.js';
 import notificationRouter from './notification/notification.router.js';
-import categoryRouter from './Category/category.route';
+import categoryRouter from './Category/category.route.js';
 
 const init = (app) => {
     /*----------------------------------- */
