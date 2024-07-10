@@ -19,6 +19,7 @@ import { limiter } from './src/middleware/rateLimit.js';
 import initSocket from './src/utils/socketIo.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 
 const app = express();
 const server = initSocket(app);
@@ -50,7 +51,7 @@ app.use(cookieParser());
 if (process.env.NODE_ENV == 'development') {
     app.use(morgan('dev'));
 }
-
+app.use(compression())
 
 init(app);
 // app.set('trust proxy', true);

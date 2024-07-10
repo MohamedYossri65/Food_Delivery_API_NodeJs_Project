@@ -2,11 +2,11 @@
   "name": "food_delivary_website",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "supervisor server.js",
-    "start:prod": "NODE_ENV='production' supervisor server.js",
-    "debug": "ndb server.js"
+    "start": "supervisor index.js",
+    "start:prod": "NODE_ENV='production' supervisor index.js",
+    "debug": "ndb index.js"
   },
   "type": "module",
   "keywords": [],
@@ -18,6 +18,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "cryptography": "^1.2.3",
