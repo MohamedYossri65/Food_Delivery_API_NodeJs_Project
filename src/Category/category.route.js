@@ -1,6 +1,6 @@
 import express from 'express';
 import * as categorycontroller from './category.controller.js';
-import foodRouter from '../Food/food.router.js';
+import foodRouter from '../food/food.router.js';
 import { allowedTo, protectedRouts } from '../auth/auth.controller.js';
 import { uploadSingleFile } from '../middleware/fileUpload.js';
 
